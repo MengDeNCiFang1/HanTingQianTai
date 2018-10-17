@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.accp.dao.lzh.LzhWzxDao" >
+
+<select id="queryWzxAll" resultType="com.accp.vo.lzh.LzhVo">
+SELECT serviceId,shopName,shopImg,servicePrice,serviceCoverImg,serviceTitle,services.serviceCity,user.merchantLevel FROM USER  INNER JOIN  services
+ON user.userId=services.userid                           					  
+WHERE services.stid=2
+</select>
+
+<select id="queryWzxCity" resultType="com.accp.pojo.sharea">
+SELECT * FROM `sharea` WHERE pid=1
+</select>
+<select id="queryWzxLevel" resultType="com.accp.pojo.servicelevel">
+SELECT `serlevelName`,serlevelId FROM  `servicelevel` 
+WHERE servicelevel.stid=2
+</select>
+
+<select id="queryWzxDate" resultType="com.accp.vo.lzh.LzhVo">
+SELECT * FROM `services` WHERE serviceStartDate=#{openDate} AND  serviceEndDate=#{closeDate}
+</select>
+
+<select id="queryByWzxCiLe" resultType="com.accp.vo.lzh.LzhVo">
+SELECT * FROM services
+INNER JOIN USER
+ON services.userId=user.userid
+<where>
+<if test="title!=null">
+services.serviceTitle LIKE '%${title}%'	
+</if>
+<if test="stid!=null">
+and services.resourceID=#{stid} 
+</if>
+<if test="cityID!=null">
+and services.serviceCity=#{cityID}
+</if>
+<if test="serviceStartDate!=null">
+and serviceStartDate &gt;=#{serviceStartDate}
+</if>
+<if test="serviceEndDate!=null">
+and serviceEndDate &lt;=#{serviceEndDate}
+AND serviceEndDate>=#{serviceStartDate}
+</if>
+AND services.stid=2
+</where>
+</select>
+
+<select id="queryByJiage" resultType="com.accp.vo.lzh.LzhVo">
+SELECT * FROM services
+INNER JOIN USER
+ON services.userId=user.userid
+<if test="jiage%2!=0">
+WHERE  services.stid=2  ORDER BY servicePrice ASC 
+</if>
+<if test="jiage%2==0">
+WHERE  services.stid=2  ORDER BY servicePrice desc
+</if>
+</select>
+
+<select id="queryWzxDetails" resultType="com.accp.vo.lzh.LzhZjyVo">
+SELECT * FROM sharea
+INNER JOIN  services
+ON sharea.`areaid`=services.serviceCity
+INNER JOIN USER
+ON services.`userID`=user.`userID`
+ WHERE services.serviceId=#{serviceId} and sharea.pid=1 
+</select>
+
+<select id="queryWzxCollection" resultType="int">
+SELECT count(*) FROM  MerchantCollection JOIN USER
+ON MerchantCollection.`userID` =user.`userID`
+where user.userID=#{userid}
+</select>
+
+<select id="queryWzxPj" resultType="com.accp.vo.lzh.LzhZjyVo">
+SELECT a.`serviceAppraiseContent`,a.serviceAppraiseDate,a.serviceAppraiseLevel,user.userName,user.userImgPath FROM USER INNER JOIN `evaluationservice` a
+ON user.`userID`=a.`userID`
+INNER JOIN services
+ON services.`serviceID`=user.`userID`
+WHERE a.`userID`=1  AND services.serviceID=1 AND services.`stid`=1
+</select>
+
+</mapper>   

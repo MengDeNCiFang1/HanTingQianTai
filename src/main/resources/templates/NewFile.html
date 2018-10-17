@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>js记录鼠标的点击次数</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+</head>
+<body>
+<input type="button" value="点击" id="a"/>
+<div id="count"></div>博客园 www.cnblogs.com 提示您：
+<script type="text/javascript">
+function addCookie(name,cookievalue,time) {
+if (name != "" && cookievalue != "" &&  time != "") {
+if (isNaN(time) == false){
+var expires = new Date();
+expires.setTime(expires.getTime() + time * 1000);
+document.cookie = name + '=' + escape(cookievalue) + ';expires=' + expires.toGMTString();
+}
+}
+}
+function getCookie(cookieName) {
+var cookieString = document.cookie;
+var start = cookieString.indexOf(cookieName + '=');
+if (start == -1)
+return null;
+start += cookieName.length + 1;
+var end = cookieString.indexOf(';', start);
+if (end == -1) return unescape(cookieString.substring(start));
+return unescape(cookieString.substring(start, end));
+}
+//var html = document.getElementsByTagName("html")[0];
+var html = document.getElementById('a');
+html.onclick = function(){
+var count = parseInt(getCookie('count'))+1;
+addCookie("count",count,"1000");
+document.getElementById("count").innerHTML = "您点击了"+getCookie('count')+"次！";
+}
+if (getCookie('count')){
+document.getElementById("count").innerHTML = "您点击了"+getCookie('count')+"次！";
+}else{
+document.getElementById("count").innerHTML = "您还没有点击过！";
+addCookie("count","0","1000");
+}
+</script>
+</body>
+</html>
